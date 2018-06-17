@@ -1,23 +1,26 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 import java.awt.Color;
-import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SwipeBandDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtSlaughterhouse;
+	JFrame parent;
+
+	private int amount;
+
+	public void setAmount(int newAmount) {
+		amount = newAmount;
+	}
 
 	/**
 	 * Launch the application.
@@ -60,9 +63,37 @@ public class SwipeBandDialog extends JDialog {
 			JButton okButton = new JButton("Verify");
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					SuccessfulDialog sd = new SuccessfulDialog();
-					sd.setModal(true);
-					sd.setVisible(true);
+					int balance = 0;
+					ResultSet rs = DBAccess.selectUser(txtSlaughterhouse.getText());
+
+					try {
+						while(rs.next()) {
+							try {
+								balance = rs.getInt(8);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+
+					if (balance < amount) {
+						ErrorDialog sbc = new ErrorDialog();
+						sbc.setLocationRelativeTo(parent);
+						sbc.setModal(true);
+						sbc.setVisible(true);
+
+						dispose();
+
+					} else {
+						DBAccess.customerDoesRestaurant(txtSlaughterhouse.getText(), "123", "1000");
+						SuccessfulDialog sd = new SuccessfulDialog();
+						sd.setModal(true);
+						sd.setVisible(true);
+
+						dispose();
+					}
 				}
 			});
 			okButton.setBounds(206, 229, 88, 23);

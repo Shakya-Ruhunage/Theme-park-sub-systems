@@ -1,23 +1,29 @@
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import javax.swing.JTextField;
-import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 
 public class SwipeBandDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtSlaughterhouse;
+	private int noOfAdults;
+	private int noOfChildren;
+    JFrame parent;
+
+	public void setNoOfChildren(int noC) {
+	    noOfChildren = noC;
+    }
+
+    public void setNoOfAdults(int noA) {
+	    noOfAdults = noA;
+    }
 
 	/**
 	 * Launch the application.
@@ -36,6 +42,7 @@ public class SwipeBandDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public SwipeBandDialog() {
+        this.parent = parent;
 		setResizable(false);
 		setBackground(Color.WHITE);
 		setBounds(100, 100, 516, 312);
@@ -60,9 +67,36 @@ public class SwipeBandDialog extends JDialog {
 			JButton okButton = new JButton("Verify");
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					SuccessfulDialog sd = new SuccessfulDialog();
-					sd.setModal(true);
-					sd.setVisible(true);
+					int noAdults = 0;
+                    int noChildren = 0;
+
+					ResultSet rs = DBAccess.selectUser(txtSlaughterhouse.getText());
+
+                    try {
+                        while (rs.next()) {
+                            noAdults = rs.getInt(6);
+                            noChildren = rs.getInt(7);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (noOfAdults > noAdults) {
+                        ErrorDialog sbc = new ErrorDialog();
+                        sbc.setLocationRelativeTo(parent);
+                        sbc.setModal(true);
+                        sbc.setVisible(true);
+
+                        dispose();
+
+                    } else {
+                        DBAccess.customerDoesEvents(txtSlaughterhouse.getText(), "123", "1000");
+                        SuccessfulDialog sd = new SuccessfulDialog();
+                        sd.setModal(true);
+                        sd.setVisible(true);
+
+                        dispose();
+                    }
 				}
 			});
 			okButton.setBounds(206, 229, 88, 23);

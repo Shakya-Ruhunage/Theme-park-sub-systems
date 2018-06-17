@@ -43,6 +43,7 @@ public class UserControl1 extends JPanel {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SwipeBandDialog sbc = new SwipeBandDialog();
+				sbc.setAmount(1000);
 				sbc.setLocationRelativeTo(parent);
 				sbc.setModal(true);
 				sbc.setVisible(true);

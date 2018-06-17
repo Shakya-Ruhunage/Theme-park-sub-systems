@@ -9,6 +9,8 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SuccessfulDialog extends JDialog {
 
@@ -44,6 +46,12 @@ public class SuccessfulDialog extends JDialog {
 			contentPanel.add(okButton);
 			okButton.setActionCommand("OK");
 			getRootPane().setDefaultButton(okButton);
+
+			okButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					dispose();
+				}
+			});
 		}
 		
 		JLabel lblNewLabel = new JLabel("");

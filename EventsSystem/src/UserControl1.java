@@ -37,6 +37,8 @@ public class UserControl1 extends JPanel {
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SwipeBandDialog sbc = new SwipeBandDialog();
+				sbc.setNoOfAdults(Integer.parseInt(textField.getText()));
+				sbc.setNoOfChildren(Integer.parseInt(textField_1.getText()));
 				sbc.setLocationRelativeTo(parent);
 				sbc.setModal(true);
 				sbc.setVisible(true);
